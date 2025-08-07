@@ -1,7 +1,7 @@
 <?php
 
 namespace App;
-
+require __DIR__ . '/../bootstrap.php';
 use mysqli;
 
 class DatabaseManager {
@@ -13,10 +13,10 @@ class DatabaseManager {
     
     private function connect() {
         $this->connection = new mysqli(
-            'db',      // host
-            'user',    // username
-            'password', // password
-            'test_db'  // database
+            $_ENV['DB_HOST'],      // host
+            $_ENV['DB_USER'],    // username
+            $_ENV['DB_PASSWORD'], // password
+            $_ENV['DB_NAME']  // database
         );
         
         if ($this->connection->connect_error) {

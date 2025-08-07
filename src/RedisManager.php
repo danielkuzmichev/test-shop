@@ -2,16 +2,15 @@
 
 namespace App;
 
+require __DIR__ . '/../bootstrap.php';
+
 use Predis\Client;
 
 class RedisManager {
     private $redis;
     
     public function __construct() {
-        $this->redis = new Client([
-            'host' => 'redis',
-            'port' => 6379
-        ]);
+        $this->redis = new Client($_ENV['REDIS']);
     }
     
     /**
