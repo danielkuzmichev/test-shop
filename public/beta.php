@@ -7,7 +7,7 @@ $handles = [];
 
 for ($i = 0; $i < $N; $i++) {
     $ch = curl_init();
-    curl_setopt($ch, CURLOPT_URL, 'http://app/alfa.php');
+    curl_setopt($ch, CURLOPT_URL, 'http://app/public/alfa.php');
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     curl_setopt($ch, CURLOPT_TIMEOUT, 30);
     curl_multi_add_handle($multiHandle, $ch);
@@ -32,7 +32,6 @@ foreach ($handles as $ch) {
 curl_multi_close($multiHandle);
 
 // Выводим результаты
-echo "Выполнено ".count($results)." параллельных запросов:\n";
 foreach ($results as $i => $result) {
     echo "Запрос $i: ".trim($result)."\n";
 }

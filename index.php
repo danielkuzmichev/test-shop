@@ -1,43 +1,56 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <title>Управление скриптами</title>
     <style>
-        body { font-family: Arial, sans-serif; margin: 20px; }
-        #stats { 
-            margin-top: 20px; 
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+
+        #stats {
+            margin-top: 20px;
             padding: 10px;
             border: 1px solid #ddd;
             background: #f5f5f5;
         }
+
         #results {
             margin-top: 20px;
             padding: 10px;
             border: 1px solid #ddd;
         }
+
         .request {
             margin-bottom: 5px;
             padding: 5px;
             background: #f0f0f0;
         }
+
         #loading {
             display: none;
             margin-top: 10px;
             color: #666;
         }
+
         table {
             width: 100%;
             border-collapse: collapse;
             margin-top: 10px;
         }
-        th, td {
+
+        th,
+        td {
             border: 1px solid #ddd;
             padding: 8px;
             text-align: left;
         }
+
         th {
             background-color: #f2f2f2;
         }
+
         .meta-info {
             margin-top: 15px;
             font-style: italic;
@@ -45,9 +58,10 @@
         }
     </style>
 </head>
+
 <body>
     <h1>Управление скриптами</h1>
-    
+
     <div>
         <label>Количество запусков (N):</label>
         <input type="number" id="N" value="10" min="1">
@@ -68,27 +82,21 @@
             const N = document.getElementById('N').value;
             const resultsContainer = document.getElementById('results');
             const loadingIndicator = document.getElementById('loading');
-            
+
             resultsContainer.innerHTML = '';
             loadingIndicator.style.display = 'inline';
-            
+
             try {
-                const promises = [];
-                for (let i = 0; i < N; i++) {
-                    promises.push(
-                        fetch('public/alfa.php')
-                            .then(response => response.text())
-                            .then(data => ({ index: i, data: data.trim() }))
-                    );
-                }
+                const response = await fetch(`public/beta.php?N=${N}`);
+                const data = await response.text();
                 
-                const results = await Promise.all(promises);
+                const results = data.trim().split('\n').filter(line => line.length > 0);
                 
                 resultsContainer.innerHTML = `
                     <h3>Выполнено ${results.length} запросов к Alpha:</h3>
-                    ${results.map(r => `
+                    ${results.map((r, i) => `
                         <div class="request">
-                            <strong>Запрос ${r.index}:</strong> ${r.data}
+                            <strong>Запрос ${i}:</strong> ${r}
                         </div>
                     `).join('')}
                 `;
@@ -104,11 +112,11 @@
             try {
                 const response = await fetch('public/gamma.php');
                 const data = await response.json();
-                
+
                 // Проверяем структуру данных
                 const statsData = data.data?.data || [];
                 const meta = data.data?.meta || {};
-                
+
                 // Создаем HTML для таблицы
                 let tableHTML = `
                     <table>
@@ -123,7 +131,7 @@
                         </thead>
                         <tbody>
                 `;
-                
+
                 // Добавляем строки с данными
                 statsData.forEach(item => {
                     tableHTML += `
@@ -136,7 +144,7 @@
                         </tr>
                     `;
                 });
-                
+
                 tableHTML += `
                         </tbody>
                     </table>
@@ -146,10 +154,10 @@
                         Данные обновлены: ${meta.generated_at || 'неизвестно'}
                     </div>
                 `;
-                
+
                 document.getElementById('stats').innerHTML = tableHTML;
             } catch (error) {
-                document.getElementById('stats').innerHTML = 
+                document.getElementById('stats').innerHTML =
                     `<div style="color: red;">Ошибка загрузки статистики: ${error.message}</div>`;
             }
         }
@@ -159,4 +167,5 @@
         updateGammaStats(); // Первоначальная загрузка
     </script>
 </body>
+
 </html>

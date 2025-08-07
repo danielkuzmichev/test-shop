@@ -18,7 +18,7 @@ try {
     }
     
     // Имитация обработки
-    sleep(1);
+    sleep(5);
     
     $productId = rand(1, 2); // Случайный продукт
     $orderId = $dbManager->addOrder($productId);
