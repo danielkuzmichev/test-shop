@@ -6,14 +6,14 @@ require __DIR__.'/../vendor/autoload.php';
 use App\DatabaseManager;
 use App\RedisManager;
 
-$locker = new RedisManager();
+$redis = new RedisManager();
 $dbManager = new DatabaseManager();
 
 
 $lockKey = "order_process";
 
 try {
-    if (!$locker->acquireLock($lockKey, 5)) {
+    if (!$redis->acquireLock($lockKey, 5)) {
         die('Process locked');
     }
     
@@ -22,9 +22,10 @@ try {
     
     $productId = rand(1, 2); // Случайный продукт
     $orderId = $dbManager->addOrder($productId);
+    $redis->releaseLock('category_stats_cache');
     
     echo "Added new order with product $productId";
     
 } finally {
-    $locker->releaseLock($lockKey);
+    $redis->releaseLock($lockKey);
 }

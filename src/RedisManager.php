@@ -6,38 +6,33 @@ require __DIR__ . '/../bootstrap.php';
 
 use Predis\Client;
 
-class RedisManager {
+class RedisManager 
+{
     private $redis;
     
-    public function __construct() {
+    public function __construct() 
+    {
         $this->redis = new Client($_ENV['REDIS']);
     }
-    
-    /**
-     * Устанавливает блокировку
-     * @param string $key - ключ блокировки
-     * @param int $ttl - время жизни в секундах
-     * @return bool - успешность установки блокировки
-     */
+
     public function acquireLock($key, $ttl = 10) {
         return $this->redis->set($key, 1, 'EX', $ttl, 'NX');
     }
-    
-    /**
-     * Освобождает блокировку
-     * @param string $key - ключ блокировки
-     */
-    public function releaseLock($key) {
+
+    public function releaseLock($key) 
+    {
         $lockKey = $key;
         $this->redis->del([$lockKey]);
     }
-    
-    /**
-     * Проверяет существование блокировки
-     * @param string $key - ключ блокировки
-     * @return bool
-     */
-    public function isLocked($key) {
+
+    public function isLocked($key) 
+    {
         return $this->redis->exists($key) > 0;
     }
+
+    public function getClient() 
+    {
+        return $this->redis;
+    }
+    
 }

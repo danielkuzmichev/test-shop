@@ -4,14 +4,17 @@ namespace App;
 require __DIR__ . '/../bootstrap.php';
 use mysqli;
 
-class DatabaseManager {
+class DatabaseManager 
+{
     private $connection;
     
-    public function __construct() {
+    public function __construct() 
+    {
         $this->connect();
     }
     
-    private function connect() {
+    private function connect() 
+    {
         $this->connection = new mysqli(
             $_ENV['DB_HOST'],      // host
             $_ENV['DB_USER'],    // username
@@ -26,7 +29,8 @@ class DatabaseManager {
         $this->connection->set_charset("utf8mb4");
     }
     
-    public function addOrder($productId) {
+    public function addOrder($productId) 
+    {
         $stmt = $this->connection->prepare(
             "INSERT INTO orders (product_id) VALUES (?)"
         );
@@ -36,7 +40,8 @@ class DatabaseManager {
         return $this->connection->insert_id;
     }
     
-    public function getCategoryStats($limit = 100) {
+    public function getCategoryStats($limit = 100) 
+    {
             $stmt = $this->connection->prepare("
             SELECT 
                 c.name AS category,
@@ -97,7 +102,8 @@ class DatabaseManager {
 
     }
     
-    public function __destruct() {
+    public function __destruct() 
+    {
         if ($this->connection) {
             $this->connection->close();
         }
